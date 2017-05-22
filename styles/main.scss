@@ -1,0 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+$baseColor: #eee;
+$bodyFont: 'Roboto', sans-serif;
+
+body {
+  background-color: $baseColor !important;
+  color: #596167;
+  font-family: $bodyFont;
+  padding-top: 50px;
+  text-align: center;
+}
