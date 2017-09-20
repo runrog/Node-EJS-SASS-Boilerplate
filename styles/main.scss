@@ -2,6 +2,10 @@
 $baseColor: #eee;
 $bodyFont: 'Roboto', sans-serif;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: $baseColor !important;
   color: #596167;

@@ -12,7 +12,8 @@
     "boilerplate",
     "ejs",
     "gulp",
-    "ES6"
+    "ES6",
+    "sass"
   ],
   "author": "Roger Avalos",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
+    "gulp-ejs": "^3.0.1",
     "gulp-minify": "^1.0.0",
     "gulp-nodemon": "^2.2.1",
     "gulp-rename": "^1.2.2",

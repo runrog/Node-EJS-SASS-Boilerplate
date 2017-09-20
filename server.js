@@ -16,7 +16,7 @@ http.createServer((request, response) => {
 
     // Render our ejs
   if (extname === '.ejs') {
-    ejs.renderFile(filePath, (err, str) => {
+    ejs.renderFile(filePath, { env: 'dev' }, (err, str) => {
       // render on success
       if (!err) {
         response.end(str);

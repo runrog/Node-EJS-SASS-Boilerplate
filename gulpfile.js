@@ -8,11 +8,24 @@ const sass = require('gulp-sass');
 const rename = require('gulp-rename');
 const concat = require('gulp-concat');
 const minify = require('gulp-minify');
+const ejs = require('gulp-ejs');
 
 const reload = browserSync.reload;
 
-gulp.task('build-js', () => {
-  gulp.src('js/**/*.js')
+const sassTask = function buildSass() {
+  return gulp.src('styles/**/*.scss')
+    .pipe(sass({ outputStyle: 'compressed' })
+    .on('error', sass.logError))
+    .pipe(rename('main.min.css'))
+    .pipe(gulp.dest('./dist/css'))
+    .on('end', () => {
+      console.log('Successfully Built SASS');
+      browserSync.reload();
+    });
+};
+
+const jsTask = function buildJS() {
+  return gulp.src('js/**/*.js')
   .pipe(concat('app.js'))
   .pipe(babel({
     presets: ['env'],
@@ -24,20 +37,20 @@ gulp.task('build-js', () => {
   }))
   .pipe(gulp.dest('dist/js/'))
   .on('end', () => {
-    console.log('Successfully Build JS');
+    console.log('Successfully Built JS');
   });
-});
+};
 
-gulp.task('build-sass', () => {
-  gulp.src('styles/**/*.scss')
-    .pipe(sass({ outputStyle: 'compressed' })
-    .on('error', sass.logError))
-    .pipe(rename('main.min.css'))
-    .pipe(gulp.dest('./dist/css'))
-    .on('end', () => {
-      console.log('Successfully Build SASS');
-      browserSync.reload();
-    });
+gulp.task('build-sass', sassTask);
+gulp.task('build-js', jsTask);
+
+gulp.task('build-dist', () => {
+  gulp.src('index.ejs')
+   .pipe(ejs({}, {}, { ext: '.html' }))
+   .pipe(gulp.dest('./dist'));
+  // run sass/js tasks
+  sassTask();
+  jsTask();
 });
 
 gulp.task('browser-sync', ['nodemon'], () => {

@@ -18,6 +18,11 @@ npm start
 ### Gulp Tasks
 Gulp tasks will run automatically but to manually run them:
 
+Build dist/
+```
+gulp build-dist
+```
+
 Building Javascript: This will concat the js files together in order by name:
 ```
 gulp build-js

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <% var env, path = '' ;%>
+    <% if (env === 'dev') { path = 'dist/'; } %>
     <meta charset="utf-8">
     <title>Node + EJS Biolerplate</title>
-    <link rel="stylesheet" type="text/css" href="dist/css/main.min.css">
-    <script src="dist/js/app.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="<%- path %>css/main.min.css">
+    <script src="<%- path %>js/app.min.js" charset="utf-8"></script>
   </head>
   <body>
       <% include partials/header %>
