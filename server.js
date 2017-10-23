@@ -9,7 +9,7 @@ http.createServer((request, response) => {
   let filePath = `.${request.url}`;
 
   if (filePath === './') {
-    filePath = './index.ejs';
+    filePath = './src/index.ejs';
   }
 
   const extname = path.extname(filePath);
