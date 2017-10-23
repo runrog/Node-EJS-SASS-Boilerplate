@@ -18,9 +18,9 @@ const rackspace = JSON.parse(fs.readFileSync('./rackspace.json'));
 
 // Edit settings here as necessary
 const rackspaceFiles = function buildJS() {
-  const container = 'http://b908c4040f36e92b6c1d-5868806ce06e7becdec4f0e74f1f735c.r92.cf1.rackcdn.com/';
+  const container = 'https://cdn-url/';
   const options = {
-    uploadPath: 'static/',
+    uploadPath: 'path/to/folder',
   };
   return gulp.src('./dist/**', { read: false })
   .pipe(cloudfiles(rackspace, options))
