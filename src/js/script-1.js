@@ -1,1 +1,0 @@
-const myConstant = 'My App';

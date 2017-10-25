@@ -57,7 +57,10 @@ const sassTask = function buildSass() {
 };
 
 const jsTask = function buildJS() {
-  return gulp.src('src/js/**/*.js')
+  return gulp.src([
+    'src/js/**/*.js',
+    '!src/js/**/*.spec.js',
+  ])
   .pipe(concat('app.js'))
   .pipe(babel({
     presets: ['env'],

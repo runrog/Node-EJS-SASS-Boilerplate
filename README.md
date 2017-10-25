@@ -1,12 +1,15 @@
 ## Node + EJS boilderplate
 
 ### This boilerplate includes the following
-* Gulp (automation)
+* Gulp (task runner)
 * EJS (templating)
 * BrowserSync (live reloading)
-* SASS
+* SASS (css preprocessor)
 * ES6 (gulp-babel)
 * eslint (js linting)
+* Mocha (testing)
+* Karma (test runner)
+* Chai (testing assertion lib)
 
 ### Install
 ```
@@ -31,4 +34,10 @@ gulp build-js
 Building SASS
 ```
 gulp build-sass
+```
+
+### Testing
+Create your ```*.spec.js``` files as needed inside ```src/js/*```
+```
+npm run test
 ```
