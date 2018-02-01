@@ -2,14 +2,19 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
+const mime = require('mime');
 
 const port = 2001;
 
 http.createServer((request, response) => {
   let filePath = `.${request.url}`;
 
-  if (filePath === './') {
-    filePath = './src/index.ejs';
+  if (!filePath.match(/\/dist\//gi)) {
+    if (filePath === './') {
+      filePath = './src/index.ejs';
+    } else {
+      filePath = filePath.replace(/\.\//gi, './src/');
+    }
   }
 
   const extname = path.extname(filePath);
@@ -23,41 +28,20 @@ http.createServer((request, response) => {
       } else {
         // render or error
         response.end('An error occurred, see error in terminal');
-        console.log(err);
+        console.log(err); // eslint-disable-line
       }
     });
   }
 
-  let contentType = 'text/html';
-
-  if (extname === '.js') {
-    contentType = 'text/javascript';
-  }
-  if (extname === '.css') {
-    contentType = 'text/css';
-  }
-  if (extname === '.json') {
-    contentType = 'application/json';
-  }
-  if (extname === '.png') {
-    contentType = 'image/png';
-  }
-  if (extname === '.jpg') {
-    contentType = 'image/jpg';
-  }
-  if (extname === '.wav') {
-    contentType = 'audio/wav';
-  }
-  if (extname === '.svg') {
-    contentType = 'image/svg+xml';
-  }
+  const charSet = 'utf-8';
+  const contentType = mime.getType(path.basename(filePath));
 
   fs.readFile(filePath, (error, content) => {
     if (error) {
       if (error.code === 'ENOENT') {
         fs.readFile('./404.html', () => {
           response.writeHead(200, { 'Content-Type': contentType });
-          response.end(content, 'utf-8');
+          response.end(content, charSet);
         });
       } else {
         response.writeHead(500);
@@ -66,7 +50,7 @@ http.createServer((request, response) => {
       }
     } else {
       response.writeHead(200, { 'Content-Type': contentType });
-      response.end(content, 'utf-8');
+      response.end(content, charSet);
     }
   });
 }).listen(port);

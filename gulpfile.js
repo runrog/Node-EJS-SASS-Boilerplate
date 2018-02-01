@@ -9,46 +9,44 @@ const rename = require('gulp-rename');
 const concat = require('gulp-concat');
 const minify = require('gulp-minify');
 const ejs = require('gulp-ejs');
+const imagemin = require('gulp-imagemin');
+const autoprefixer = require('gulp-autoprefixer');
+const fse = require('fs-extra');
+const path = require('path');
+const reload = browserSync.reload;
 
-/* Uncomment this after manually adding RS cloudfiles config
-const fs = require('fs');
-const cloudfiles = require('gulp-cloudfiles');
-
-const rackspace = JSON.parse(fs.readFileSync('./rackspace.json'));
-
-// Edit settings here as necessary
-const rackspaceFiles = function buildJS() {
-  const container = 'https://cdn-url/';
-  const options = {
-    uploadPath: 'path/to/folder',
+const copyFiles = function copyFiles(files, dest) {
+  const copy = (file, dest) => {
+    return fse.copy(file, dest, err => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(`Successfully copied file ${file}!`);
+    });
   };
-  return gulp.src('./dist/**', { read: false })
-  .pipe(cloudfiles(rackspace, options))
-  .on('end', () => {
-    console.log(`Successfully pushed to cloudfiles.
-    Static URL: \x1b[33m${container}${options.uploadPath}index.html`
-    );
-  });
-};
-gulp.task('cloudfiles', rackspaceFiles);
-
-@IMPORTANT! name your rs config 'rackspace.json'
-formatted like so:
-{
-    "username": "cloudusername",
-    "apiKey": "hashed-api-key",
-    "region": "DC name (ex: DFW)",
-    "container": "CDN-name"
+  for (var i = 0; i < files.length; i++) {
+    copy(files[i], `${dest}${path.basename(files[i])}`);
+  }
 }
 
-*/
-const reload = browserSync.reload;
+const jsNodeModulesTask = function buildIcons() {
+  const dest = './dist/js/modules/';
+  const modules = [
+    'node_modules/jquery/dist/jquery.min.js',
+  ];
+  copyFiles(modules, dest);
+};
 
 const sassTask = function buildSass() {
   return gulp.src('src/styles/**/*.scss')
     .pipe(sass({ outputStyle: 'compressed' })
     .on('error', sass.logError))
     .pipe(rename('main.min.css'))
+    .pipe(autoprefixer({
+      browsers: ['last 5 versions'],
+      cascade: false,
+    }))
     .pipe(gulp.dest('./dist/css'))
     .on('end', () => {
       console.log('Successfully Built SASS');
@@ -76,24 +74,36 @@ const jsTask = function buildJS() {
   });
 };
 
-gulp.task('build-sass', sassTask);
-gulp.task('build-js', jsTask);
+const imgTask = function buildImages() {
+  return gulp.src('src/images/**/*')
+   .pipe(imagemin([
+     imagemin.optipng({ optimizationLevel: 5 }),
+   ]))
+   .pipe(gulp.dest('dist/images'))
+   .on('end', () => {
+     console.log('Successfully compressed images');
+   });
+};
 
-gulp.task('build-dist', () => {
-  gulp.src('src/index.ejs')
+const buildDist = function buildDist() {
+  return gulp.src('src/index.ejs')
    .pipe(ejs({}, {}, { ext: '.html' }))
    .pipe(gulp.dest('./dist'))
    .on('end', () => {
-     console.log('Successfully Built ejs');
-     // run sass/js tasks
+     console.log('Successfully Built EJS!');
+     // run all tasks
      sassTask();
      jsTask();
-     setTimeout(() => {
-       // uncomment after cloudfiles config is made
-       // rackspaceFiles();
-     }, 1000);
+     imgTask();
+     jsNodeModulesTask();
    });
-});
+}
+
+gulp.task('build-sass', sassTask);
+gulp.task('build-js', jsTask);
+gulp.task('build-images', imgTask);
+gulp.task('build-js-modules', jsNodeModulesTask);
+gulp.task('build-dist', buildDist);
 
 gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.use({
@@ -136,6 +146,8 @@ gulp.task('default', [
   'browser-sync',
   'build-sass',
   'build-js',
+  'build-images',
+  'build-js-modules',
 ], () => {
   watch([
     '**/*.ejs',
@@ -143,6 +155,9 @@ gulp.task('default', [
   gulp.watch([
     'src/styles/**/*.scss',
   ], ['build-sass']);
+  gulp.watch([
+    'src/images/**/*',
+  ], ['build-images']);
   gulp.watch([
     'src/js/**/*.js',
   ], ['build-js']);

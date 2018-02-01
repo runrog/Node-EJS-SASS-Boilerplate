@@ -1,5 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 $baseColor: #eee;
+$fadeBase: rgba($baseColor, 0.2);
+$darkenBase: darken($baseColor, 20%);
 $bodyFont: 'Roboto', sans-serif;
 $desktop: 'only screen and (min-width : 993px)';
 $tablet: 'only screen and (min-width:601px) and (max-width:992px)';
