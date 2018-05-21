@@ -15,7 +15,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const reload = browserSync.reload;
 
-const copyFiles = function copyFiles(files, dest) {
+const copyFiles = function copyFiles(files) {
   const copy = (file, dest) => {
     return fse.copy(file, dest, err => {
       if (err) {
@@ -25,17 +25,26 @@ const copyFiles = function copyFiles(files, dest) {
       console.log(`Successfully copied file ${file}!`);
     });
   };
-  for (var i = 0; i < files.length; i++) {
-    copy(files[i], `${dest}${path.basename(files[i])}`);
-  }
+  files.forEach((file) => copy(
+    file.module,
+    `${file.dest}${path.basename(file.module)}`
+  ));
 }
 
-const jsNodeModulesTask = function buildIcons() {
-  const dest = './dist/js/modules/';
+const buildNodeModules = function buildIcons() {
   const modules = [
-    'node_modules/jquery/dist/jquery.min.js',
+    {
+      module: './node_modules/jquery/dist/jquery.min.js',
+      dest: './dist/js/modules/',
+    },
   ];
-  copyFiles(modules, dest);
+  fse.ensureDir('./dist/js/modules')
+    .then(() => {
+      copyFiles(modules);
+    })
+    .catch(err => {
+      console.error(err)
+    });
 };
 
 const sassTask = function buildSass() {
@@ -95,14 +104,14 @@ const buildDist = function buildDist() {
      sassTask();
      jsTask();
      imgTask();
-     jsNodeModulesTask();
+     buildNodeModules();
    });
 }
 
 gulp.task('build-sass', sassTask);
 gulp.task('build-js', jsTask);
 gulp.task('build-images', imgTask);
-gulp.task('build-js-modules', jsNodeModulesTask);
+gulp.task('build-node-modules', buildNodeModules);
 gulp.task('build-dist', buildDist);
 
 gulp.task('browser-sync', ['nodemon'], () => {
@@ -147,7 +156,7 @@ gulp.task('default', [
   'build-sass',
   'build-js',
   'build-images',
-  'build-js-modules',
+  'build-node-modules',
 ], () => {
   watch([
     '**/*.ejs',
