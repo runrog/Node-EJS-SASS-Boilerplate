@@ -48,7 +48,8 @@ const buildNodeModules = function buildIcons() {
 };
 
 const sassTask = function buildSass() {
-  return gulp.src('src/styles/**/*.scss')
+  // make sure to import all other scss files in main
+  return gulp.src('src/styles/main.scss')
     .pipe(sass({ outputStyle: 'compressed' })
     .on('error', sass.logError))
     .pipe(rename('main.min.css'))
