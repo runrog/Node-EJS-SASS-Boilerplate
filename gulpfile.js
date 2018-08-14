@@ -13,6 +13,7 @@ const imagemin = require('gulp-imagemin');
 const autoprefixer = require('gulp-autoprefixer');
 const fse = require('fs-extra');
 const path = require('path');
+const glob = require('glob');
 const reload = browserSync.reload;
 
 const copyFiles = function copyFiles(files) {
@@ -95,18 +96,37 @@ const imgTask = function buildImages() {
    });
 };
 
+const buildEjs = function buildEjs() {
+  glob("./src/**/index.ejs", function (er, files) {
+    if (er) {
+      console.log(er);
+      return;
+    }
+    if (files.length > 0) {
+      files.forEach((file) => {
+        let dir = path.dirname(file).replace('\.\/src', '');
+        dir = dir === '' ? '/' : dir;
+        // compile each index file
+        gulp.src(file)
+         .pipe(ejs({}, {}, { ext: '.html' }))
+         .pipe(gulp.dest(`./dist${dir}`))
+         .on('end', () => {
+           console.log(`Successfully built html for ${dir}!`);
+         });
+      });
+    }
+  })
+}
+
 const buildDist = function buildDist() {
-  return gulp.src('src/index.ejs')
-   .pipe(ejs({}, {}, { ext: '.html' }))
-   .pipe(gulp.dest('./dist'))
-   .on('end', () => {
-     console.log('Successfully Built EJS!');
-     // run all tasks
-     sassTask();
-     jsTask();
-     imgTask();
-     buildNodeModules();
-   });
+  return fse.emptyDir('./dist')
+  .then(() => {
+    buildEjs();
+    sassTask();
+    jsTask();
+    imgTask();
+    buildNodeModules();
+  });
 }
 
 gulp.task('build-sass', sassTask);
@@ -114,6 +134,7 @@ gulp.task('build-js', jsTask);
 gulp.task('build-images', imgTask);
 gulp.task('build-node-modules', buildNodeModules);
 gulp.task('build-dist', buildDist);
+gulp.task('build-ejs', buildEjs);
 
 gulp.task('browser-sync', ['nodemon'], () => {
   browserSync.use({

@@ -7,14 +7,23 @@ const mime = require('mime');
 const port = 2001;
 
 http.createServer((request, response) => {
+  const req = request.url;
+
   let filePath = `.${request.url}`;
 
-  if (!filePath.match(/\/dist\//gi)) {
-    if (filePath === './') {
-      filePath = './src/index.ejs';
-    } else {
-      filePath = filePath.replace(/\.\//gi, './src/');
+  const cleanRoute = (route) => {
+    let r = route;
+    if (!route.endsWith('/')) {
+      r = `${route}/`;
     }
+    return r;
+  };
+
+  // when loading routes aka directory paths
+  if (path.extname(req).trim() === '') {
+    const route = cleanRoute(`${__dirname}/src${req}`);
+    console.log('\x1b[37m loading route: ', req); // eslint-disable-line
+    filePath = `${route}/index.ejs`;
   }
 
   const extname = path.extname(filePath);
