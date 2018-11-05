@@ -42,6 +42,17 @@ http.createServer((request, response) => {
     });
   }
 
+  // load assets locally
+  if (path.dirname(req).match(/\/images/gi)) {
+    filePath = `./src/images/${path.basename(req)}`;
+  }
+
+  // load dist locally
+  if (path.dirname(req).match(/\/dist/gi)) {
+    const pathInDist = req.split('/dist/')[1];
+    filePath = `./dist/${pathInDist}`;
+  }
+
   const charSet = 'utf-8';
   const contentType = mime.getType(path.basename(filePath));
 

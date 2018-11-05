@@ -25,8 +25,14 @@ Folder structure:
 
 If you wanted to navigate to the ```about``` page in the browser you would use ```http://localhost:2004/about/```
 
+### Assets
+All static assets / images can be put in the "images" folder. They can then be referenced on your pages like so:
+```html
+<img src="/images/my-image.jpeg" />
+```
+
 ### Node Modules
-If you want to include any node modules, you will need to add them to the "buildNodeModules" function in the gulp task file ```gulpfile.js```.
+If you want to distribute any node modules, you will need to add them to the "buildNodeModules" function in the gulp task file ```gulpfile.js```.
 
 You need to specify the path in the ```node_modules``` folder to make. See below example:
 ```javascript
