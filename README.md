@@ -78,7 +78,7 @@ gulp build-js-modules
 ```
 
 ### Testing
-Create your ```*.spec.js``` files as needed inside ```src/js/*```
+Create your ```*.spec.js``` files as needed inside ```src/_js/*```
 ```
 npm run test
 ```
