@@ -50,7 +50,7 @@ const buildNodeModules = function buildIcons() {
 
 const sassTask = function buildSass() {
   // make sure to import all other scss files in main
-  return gulp.src('src/styles/main.scss')
+  return gulp.src('src/_styles/main.scss')
     .pipe(sass({ outputStyle: 'compressed' })
     .on('error', sass.logError))
     .pipe(rename('main.min.css'))
@@ -67,8 +67,8 @@ const sassTask = function buildSass() {
 
 const jsTask = function buildJS() {
   return gulp.src([
-    'src/js/**/*.js',
-    '!src/js/**/*.spec.js',
+    'src/_js/**/*.js',
+    '!src/_js/**/*.spec.js',
   ])
   .pipe(concat('app.js'))
   .pipe(babel({
@@ -86,11 +86,11 @@ const jsTask = function buildJS() {
 };
 
 const imgTask = function buildImages() {
-  return gulp.src('src/images/**/*')
+  return gulp.src('src/_images/**/*')
    .pipe(imagemin([
      imagemin.optipng({ optimizationLevel: 5 }),
    ]))
-   .pipe(gulp.dest('dist/images'))
+   .pipe(gulp.dest('dist/_images'))
    .on('end', () => {
      console.log('Successfully compressed images');
    });
@@ -184,12 +184,12 @@ gulp.task('default', [
     '**/*.ejs',
   ], reload);
   gulp.watch([
-    'src/styles/**/*.scss',
+    'src/_styles/**/*.scss',
   ], ['build-sass']);
   gulp.watch([
-    'src/images/**/*',
+    'src/_images/**/*',
   ], ['build-images']);
   gulp.watch([
-    'src/js/**/*.js',
+    'src/_js/**/*.js',
   ], ['build-js']);
 });

@@ -26,9 +26,9 @@ Folder structure:
 If you wanted to navigate to the ```about``` page in the browser you would use ```http://localhost:2004/about/```
 
 ### Assets
-All static assets / images can be put in the "images" folder. They can then be referenced on your pages like so:
+All static assets/images can be put in the `_images` folder. They can then be referenced on your pages like so:
 ```html
-<img src="/images/my-image.jpeg" />
+<img src="/_images/my-image.jpeg" />
 ```
 
 ### Node Modules

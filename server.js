@@ -23,7 +23,7 @@ http.createServer((request, response) => {
   if (path.extname(req).trim() === '') {
     const route = cleanRoute(`${__dirname}/src${req}`);
     console.log('\x1b[37m loading route: ', req); // eslint-disable-line
-    filePath = `${route}/index.ejs`;
+    filePath = (`${route}/index.ejs`).replace('//index.ejs', '/index.ejs');
   }
 
   const extname = path.extname(filePath);
@@ -43,8 +43,8 @@ http.createServer((request, response) => {
   }
 
   // load assets locally
-  if (path.dirname(req).match(/\/images/gi)) {
-    filePath = `./src/images/${path.basename(req)}`;
+  if (path.dirname(req).match(/\/_images/gi)) {
+    filePath = `./src/_images/${path.basename(req)}`;
   }
 
   // load dist locally
